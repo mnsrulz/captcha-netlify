@@ -44,16 +44,16 @@ router.get('/resolve', async (req, res) => {
     image.write(imgPath);
 
     try {
-      Tesseract.recognize(
+      const tsresult = await Tesseract.recognize(
         './../out.png',
         'eng',
         { logger: m => console.log(m) }
-      ).then(({ data: { text } }) => {
-        const result = {
-          text
-        };
-        res.json(result);
-      })
+      )
+      const { text } = tsresult.data;
+      const result = {
+        text
+      };
+      res.json(result);
     } catch (error) {
       res.json({
         error
