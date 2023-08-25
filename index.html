@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>nurlresolver-demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" />
+    <style type="text/css">
+        .masthead.segment {
+            height: 100%;
+            padding: 1em 0em;
+            flex: 1;
+        }
+        
+        .masthead h1.ui.header {
+            margin-top: 2em;
+            margin-bottom: 0em;
+            font-size: 4em;
+            font-weight: normal;
+        }
+        
+        @media only screen and (max-width: 700px) {
+            .masthead h1.ui.header {
+                margin-top: 1.5em;
+                font-size: 2em;
+            }
+        }
+        
+        .pusher {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pusher">
+        <div id="app" class="ui vertical masthead segment">
+            <div class="ui text center aligned container">
+                <h1 class="ui header">
+                    nUrlResolver
+                </h1>
+                <p>A URL resolver of your very own</p>
+                <div class="ui middle aligned left aligned grid">
+                    <div class="row">
+                        <div class="column">
+                            <form method="GET" class="ui form" @submit="resolve">
+                                <div class="ui fluid action input">
+                                    <input type="text" autofocus name="q" placeholder="Type in the url to resolve..." v-bind:class="{ disabled: isResolving }" v-model="queryUrl">
+                                    <div class="ui primary button" v-if="isResolving">Cancel</div>
+                                    <button class="ui primary button" v-bind:class="{ disabled: isResolving }" v-else>Resolve</button>
+                                </div>
+                                <h4 class="ui dividing header">Options</h4>
+                                <div v-bind:class="{ disabled: isResolving }">
+                                    <div class="field ">
+                                        <div class="ui checkbox">
+                                            <input name="m" type="checkbox" v-model="extractMetaInfo">
+                                            <label>Extract meta information</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui checkbox">
+                                            <input name="r" type="checkbox" v-model="recursive">
+                                            <label>Recursive</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row" v-if="hasOutput">
+                        <div class="column">
+                            <h4 class="ui dividing header">Output</h4>
+                            <div class="ui tertiary segment">
+                                <pre>{{output}}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui inverted vertical footer segment">
+            <div class="ui container">
+                <div class="ui grid">
+                    <div class="eight wide column">
+                        <p>© 2020 Copyright</p>
+                    </div>
+                    <div class="eight wide column right aligned">
+                        <p>Powered by Netlify</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha512-U6K1YLIFUWcvuw5ucmMtT9HH4t0uz3M366qrF5y4vnyH6dgDzndlcGvH/Lz5k8NFh80SN95aJ5rqGZEdaQZ7ZQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.min.js" integrity="sha512-XdUZ5nrNkVySQBnnM5vzDqHai823Spoq1W3pJoQwomQja+o4Nw0Ew1ppxo5bhF2vMug6sfibhKWcNJsG8Vj9tg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(() => {
+            $('.ui.checkbox')
+                .checkbox();
+        });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                hasOutput: false,
+                output: 'Hello Vue!',
+                queryUrl: '',
+                extractMetaInfo: '',
+                isResolving: false,
+                recursive: false
+            },
+            methods: {
+                resolve: async function(e) {
+                    try {
+                        e.preventDefault();
+                        this.isResolving = true;
+                        // function
+                        const encodeFormData = (data) => {
+                            return Object.keys(data)
+                                .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+                                .join('&');
+                        }
+
+                        this.hasOutput = false;
+                        const queryObject = {
+                            u: this.queryUrl,
+                            // m: this.extractMetaInfo,
+                            // r: this.recursive
+                        };
+
+                        const queryParams = encodeFormData(queryObject);
+                        const url = '.netlify/functions/server/resolve?' + queryParams;
+
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const responseJson = await response.json();
+                        this.output = JSON.stringify(responseJson, null, 2);
+                    } catch (error) {
+                        this.output = JSON.stringify(error.toString());
+                    }
+                    this.hasOutput = true;
+                    this.isResolving = false;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

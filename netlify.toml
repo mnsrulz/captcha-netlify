@@ -1,0 +1,11 @@
+[build]
+  command = "npm install && npm run build"
+  functions = "functions"
+
+[functions]
+  # Specifies `esbuild` for functions bundling  
+  node_bundler = "esbuild"
+  directory = "functions"
+
+[build.environment]
+  NODE_VERSION = "16"
