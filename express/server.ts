@@ -45,7 +45,7 @@ router.get('/resolve', async (req, res) => {
 
     try {
       const tsresult = await Tesseract.recognize(
-        './../out.png',
+        imgPath,
         'eng',
         { logger: m => console.log(m) }
       )
