@@ -19,7 +19,7 @@ router.get('/resolve', async (req, res) => {
   if (typeof (u) == 'string') {
     const image = await Jimp.read(u);
 
-    const imageName = new URL(u).pathname;
+    const imageName = new URL(u).pathname.split('/').pop();
     image.crop(21, 7, 36, 12);
     image.contrast(0.2)
     image.scale(100)
@@ -37,10 +37,10 @@ router.get('/resolve', async (req, res) => {
         }
       }
     }
-
+    const imgPath = `./${imageName}.png`;
     image.scale(0.2)
     image.dither16();
-    image.write(`./${imageName}.png`);
+    image.write(imgPath);
 
     const worker = await createWorker({
       logger: m => console.log(m),
@@ -56,8 +56,7 @@ router.get('/resolve', async (req, res) => {
         tessedit_char_whitelist: '0123456789',
       });
 
-
-      const { data: { text } } = await worker.recognize('./../out.png');
+      const { data: { text } } = await worker.recognize(imgPath);
       console.log(`recognized: ${text}`);
       await worker.terminate();
 
