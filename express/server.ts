@@ -56,7 +56,8 @@ router.get('/resolve', async (req, res) => {
       res.json(result);
     } catch (error) {
       res.json({
-        error
+        errorMessage: `an error occurred while recognizing the text using Tesseract`,
+        innerError: error
       });
     }
 
