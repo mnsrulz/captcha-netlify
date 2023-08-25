@@ -19,14 +19,54 @@ router.get('/resolve', async (req, res) => {
   if (typeof (u) == 'string') {
     const image = await Jimp.read(u);
 
-    // const extractMetaInformation = m === 'true';
-    // const timeout = parseInt(`${t}`) || 8;  //8 seconds of timeout default
-    // const result = r === 'true' ? await nurlresolver.resolveRecursive(q, { extractMetaInformation, timeout })
-    //   : await nurlresolver.resolve(q, { extractMetaInformation, timeout });
-    const result = {
-      u
-    };
-    res.json(result);
+    const imageName = new URL(u).pathname;
+    image.crop(21, 7, 36, 12);
+    image.contrast(0.2)
+    image.scale(100)
+
+    for (var x = 0; x < image.bitmap.width; x++) {
+      for (var y = 0; y < image.bitmap.height; y++) {
+        let currentColor = image.getPixelColor(x, y);
+
+        var rgb = Jimp.intToRGBA(currentColor);
+        const min = 240;
+
+        if (rgb.r + rgb.g + rgb.b > min) {
+          let newVal = 255;
+          image.setPixelColor(Jimp.rgbaToInt(newVal, newVal, newVal, newVal), x, y);
+        }
+      }
+    }
+
+    image.scale(0.2)
+    image.dither16();
+    image.write(`./${imageName}.png`);
+
+    const worker = await createWorker({
+      logger: m => console.log(m),
+    });
+
+    const lang = 'eng+por'; //por
+
+    (async () => {
+      // await worker.load();
+      await worker.loadLanguage(lang);
+      await worker.initialize(lang);
+      await worker.setParameters({
+        tessedit_char_whitelist: '0123456789',
+      });
+
+
+      const { data: { text } } = await worker.recognize('./../out.png');
+      console.log(`recognized: ${text}`);
+      await worker.terminate();
+
+      const result = {
+        text
+      };
+      res.json(result);
+    })()
+
   } else {
     res.status(400).json({ error: 'Query param u not defined' });
   }
