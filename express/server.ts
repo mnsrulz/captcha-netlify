@@ -43,23 +43,27 @@ router.get('/resolve', async (req, res) => {
     image.dither16();
     image.write(imgPath);
 
-    try {
-      const tsresult = await Tesseract.recognize(
-        './../out.png',
-        'eng',
-        { logger: m => console.log(m) }
-      )
-      const { text } = tsresult.data;
-      const result = {
-        text
-      };
-      res.json(result);
-    } catch (error) {
-      res.json({
-        errorMessage: `an error occurred while recognizing the text using Tesseract`,
-        innerError: error
-      });
-    }
+    res.json({
+      msg: 'converted the image'
+    });
+
+    // try {
+    //   const tsresult = await Tesseract.recognize(
+    //     './../out.png',
+    //     'eng',
+    //     { logger: m => console.log(m) }
+    //   )
+    //   const { text } = tsresult.data;
+    //   const result = {
+    //     text
+    //   };
+    //   res.json(result);
+    // } catch (error) {
+    //   res.json({
+    //     errorMessage: `an error occurred while recognizing the text using Tesseract`,
+    //     innerError: error
+    //   });
+    // }
 
 
     // const worker = await createWorker({
