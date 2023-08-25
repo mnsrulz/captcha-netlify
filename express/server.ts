@@ -43,16 +43,22 @@ router.get('/resolve', async (req, res) => {
     image.dither16();
     image.write(imgPath);
 
-    Tesseract.recognize(
-      './../out.png',
-      'eng',
-      { logger: m => console.log(m) }
-    ).then(({ data: { text } }) => {
-      const result = {
-        text
-      };
-      res.json(result);
-    })
+    try {
+      Tesseract.recognize(
+        './../out.png',
+        'eng',
+        { logger: m => console.log(m) }
+      ).then(({ data: { text } }) => {
+        const result = {
+          text
+        };
+        res.json(result);
+      })
+    } catch (error) {
+      res.json({
+        error
+      });
+    }
 
 
     // const worker = await createWorker({
