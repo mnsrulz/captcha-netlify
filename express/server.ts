@@ -5,7 +5,8 @@ import serverless from 'serverless-http';
 const app = express();
 const router = Router();
 import Jimp from 'jimp';
-import { createWorker } from 'tesseract.js';
+// import { createWorker } from 'tesseract.js';
+import Tesseract from 'tesseract.js';
 import cors from 'cors';
 
 router.get('/', async (req, res) => {
@@ -42,29 +43,41 @@ router.get('/resolve', async (req, res) => {
     image.dither16();
     image.write(imgPath);
 
-    const worker = await createWorker({
-      logger: m => console.log(m),
-    });
-
-    const lang = 'eng+por'; //por
-
-    (async () => {
-      // await worker.load();
-      await worker.loadLanguage(lang);
-      await worker.initialize(lang);
-      await worker.setParameters({
-        tessedit_char_whitelist: '0123456789',
-      });
-
-      const { data: { text } } = await worker.recognize(imgPath);
-      console.log(`recognized: ${text}`);
-      await worker.terminate();
-
+    Tesseract.recognize(
+      './../out.png',
+      'eng',
+      { logger: m => console.log(m) }
+    ).then(({ data: { text } }) => {
       const result = {
         text
       };
       res.json(result);
-    })()
+    })
+
+
+    // const worker = await createWorker({
+    //   logger: m => console.log(m),
+    // });
+
+    // const lang = 'eng+por'; //por
+
+    // (async () => {
+    //   // await worker.load();
+    //   await worker.loadLanguage(lang);
+    //   await worker.initialize(lang);
+    //   await worker.setParameters({
+    //     tessedit_char_whitelist: '0123456789',
+    //   });
+
+    //   const { data: { text } } = await worker.recognize(imgPath);
+    //   console.log(`recognized: ${text}`);
+    //   await worker.terminate();
+
+    //   const result = {
+    //     text
+    //   };
+    //   res.json(result);
+    // })()
 
   } else {
     res.status(400).json({ error: 'Query param u not defined' });
