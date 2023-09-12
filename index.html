@@ -137,13 +137,11 @@
 
                         this.hasOutput = false;
                         const queryObject = {
-                            u: this.queryUrl,
-                            // m: this.extractMetaInfo,
-                            // r: this.recursive
+                            v: this.queryUrl,
                         };
 
                         const queryParams = encodeFormData(queryObject);
-                        const url = '.netlify/functions/server/resolve?' + queryParams;
+                        const url = '.netlify/functions/server/yt?' + queryParams;
 
                         const response = await fetch(url, {
                             method: 'GET',
