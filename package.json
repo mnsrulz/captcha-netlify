@@ -5,8 +5,8 @@
   "main": "functions/server.js",
   "type": "module",
   "scripts": {
-    "build": "esbuild express/i.ts --outfile=functions/server.js --bundle --minify --platform=node --target=ES2022 --format=esm",
-    "dev": "tsx watch express/i.ts"
+    "build": "esbuild express/j.ts --outfile=functions/server.js --bundle --minify --platform=node --target=ES2022 --format=esm",
+    "dev": "tsx watch express/j.ts"
   },
   "author": "",
   "license": "MIT",
