@@ -12,7 +12,11 @@ router.get('/yt', async (req, res) => {
   if (typeof (v) == 'string') {
     try {
       const resp = await recognize(v)
-      res.json({resp});
+      res.json({
+        data: {
+          text: resp.data.text
+        }
+      });
     } catch (error) {
       res.json({
         error
