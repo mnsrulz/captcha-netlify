@@ -62,7 +62,7 @@ const jimpify = async (u) => {
   image.dither16();
   image.write(imgPath);
 
-  const boundGetBuffer = promisify(jimp.getBuffer.bind(jimp));
+  const boundGetBuffer = promisify(image.getBuffer.bind(image));
   return await boundGetBuffer();
   
 }
