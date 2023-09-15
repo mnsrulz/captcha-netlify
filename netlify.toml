@@ -6,6 +6,7 @@
   # Specifies `esbuild` for functions bundling  
   node_bundler = "esbuild"
   directory = "functions"
+  included_files = ["functions/**"]
 
 [build.environment]
-  NODE_VERSION = "16"
+  NODE_VERSION = "18"
