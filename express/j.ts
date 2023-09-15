@@ -1,5 +1,4 @@
 'use strict';
-import { promisify } from "util";
 import express, { Router } from 'express';
 import serverless from 'serverless-http';
 const app = express();
@@ -57,12 +56,15 @@ const jimpify = async (u) => {
       }
     }
   }
-  const imgPath = `./${imageName}.png`;
+  // const imgPath = `./${imageName}.png`;
   image.scale(0.2)
   image.dither16();
-  image.write(imgPath);
+  // image.write(imgPath);
 
-  const boundGetBuffer = promisify(image.getBuffer.bind(image));
-  return await boundGetBuffer();
-  
+  return new Promise((resolve, reject) => {
+    image.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
+      resolve(buffer)
+    });
+  })
+
 }
