@@ -4,7 +4,8 @@ import serverless from 'serverless-http';
 const app = express();
 const router = Router();
 import cors from 'cors';
-import { recon } from './captcha';
+// import { recon } from './captcha';
+import { recognize } from './captchaV2';
 import { readdirSync } from 'node:fs'
 
 // await recon('');
@@ -17,7 +18,7 @@ router.get('/yt', async (req, res) => {
   if (typeof (v) == 'string') {
     let resp;
     try {
-      resp = await recon(v)
+      resp = await recognize(v)
     } catch (error) {
 
     }
