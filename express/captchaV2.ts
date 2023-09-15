@@ -56,7 +56,7 @@ export const recognize = async () => {
 
                     if (o.status !== 'resolve') return;
 
-                    loadImage(image).then((img) => {
+                    loadImage(SIMPLE_PNG_BASE64).then((img) => {
                         fad.dispatchHandlers({
                             id: '1',
                             action: 'recognize',
