@@ -1,4 +1,5 @@
 'use strict';
+import { promisify } from "util";
 import express, { Router } from 'express';
 import serverless from 'serverless-http';
 const app = express();
@@ -12,8 +13,8 @@ router.get('/yt', async (req, res) => {
   const { v } = req.query;
   if (typeof (v) == 'string') {
     try {
-      const jimpedImagePath = await jimpify(v);
-      const resp = await recognize(jimpedImagePath);
+      const jimpedImage = await jimpify(v);
+      const resp = await recognize(jimpedImage);
       res.json({
         data: {
           text: resp.data.text
@@ -61,5 +62,7 @@ const jimpify = async (u) => {
   image.dither16();
   image.write(imgPath);
 
-  return imgPath;
+  const boundGetBuffer = promisify(jimp.getBuffer.bind(jimp));
+  return await boundGetBuffer();
+  
 }
