@@ -14,7 +14,7 @@ router.get('/captcha', async (req, res) => {
       const resp = await recognize(jimpedImage);
       res.json({
         data: {
-          text: resp.data.text
+          text: resp.data.text.trim()
         }
       });
     } catch (error) {
