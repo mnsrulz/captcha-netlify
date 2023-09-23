@@ -13,8 +13,7 @@ w.setAdapter({
     ...cache,
 })
 
-export const recognize = async (imageSrc: string | Buffer) => {
-
+export const init = async () => {
     await startJob({
         jobId: '1',
         action: 'load',
@@ -52,9 +51,11 @@ export const recognize = async (imageSrc: string | Buffer) => {
             }
         }
     });
+}
 
+export const recognize = async (imageSrc: string | Buffer) => {
+    await initApi;
     const img = await loadImage(imageSrc)
-
     return await startJob({
         jobId: '1',
         action: 'recognize',
@@ -80,3 +81,5 @@ const startJob = (p: {
         });
     });
 }
+
+const initApi = init();
