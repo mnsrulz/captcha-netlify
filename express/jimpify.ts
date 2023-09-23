@@ -2,8 +2,11 @@
 import Jimp from 'jimp';
 
 export const jimpify = async (u): Promise<Buffer> => {
-  const arrayBuffer = await fetch(u)
-                            .then(r => r.arrayBuffer());
+  console.log(`loading the image`);
+  const resp = await fetch(u)
+  if (!resp.ok) throw new Error(`non okay response ${resp.status}:${resp.statusText} received!`);
+  const arrayBuffer = await resp.arrayBuffer();
+  console.log(`reading the image buffer completd`);
   const image = await Jimp.read(Buffer.from(arrayBuffer));
 
   const imageName = new URL(u).pathname.split('/').pop();

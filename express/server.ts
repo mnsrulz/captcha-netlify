@@ -11,6 +11,7 @@ router.get('/captcha', async (req, res) => {
   if (typeof (i) == 'string') {
     try {
       const jimpedImage = await jimpify(i);
+      console.log(`jimped the image.. now sending to recognize!`)
       const resp = await recognize(jimpedImage);
       res.json({
         data: {
@@ -19,7 +20,8 @@ router.get('/captcha', async (req, res) => {
       });
     } catch (error) {
       res.json({
-        error
+        error,
+        json: JSON.stringify(error)
       });
     }
   } else {
