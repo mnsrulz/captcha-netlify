@@ -118,7 +118,7 @@
             data: {
                 hasOutput: false,
                 output: 'Hello Vue!',
-                queryUrl: 'https://captcha-netlify.netlify.app/samples/t.jpg',
+                queryUrl: 'https://captcha-netlify.netlify.app/samples/1.jpg',
                 extractMetaInfo: '',
                 isResolving: false,
                 recursive: false
@@ -137,11 +137,11 @@
 
                         this.hasOutput = false;
                         const queryObject = {
-                            v: this.queryUrl,
+                            i: this.queryUrl,
                         };
 
                         const queryParams = encodeFormData(queryObject);
-                        const url = '.netlify/functions/server/yt?' + queryParams;
+                        const url = '.netlify/functions/server/captcha?' + queryParams;
 
                         const response = await fetch(url, {
                             method: 'GET',

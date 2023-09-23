@@ -3,7 +3,7 @@ import { copy } from 'esbuild-plugin-copy';
 
 (async () => {
   const res = await build({
-    entryPoints: ['./express/j.ts'],
+    entryPoints: ['./express/server.ts'],
     format: 'esm',
     platform: 'node',
     target: 'ES2022',

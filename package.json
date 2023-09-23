@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "dev": "tsx watch express/j.ts",
+    "dev": "tsx watch express/server.ts",
     "start": "node .",
     "debug": "tsx watch express/debug.ts"
   },
